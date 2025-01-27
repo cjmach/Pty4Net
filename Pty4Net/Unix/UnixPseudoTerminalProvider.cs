@@ -11,26 +11,26 @@ namespace Pty4Net.Unix
     {
         public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {
-            var fdm = Native.open("/dev/ptmx", Native.O_RDWR | Native.O_NOCTTY);
+            var fdm = NativeMethods.open("/dev/ptmx", NativeMethods.O_RDWR | NativeMethods.O_NOCTTY);
 
-            var res = Native.grantpt(fdm);
-            res = Native.unlockpt(fdm);
+            var res = NativeMethods.grantpt(fdm);
+            res = NativeMethods.unlockpt(fdm);
 
-            var namePtr = Native.ptsname(fdm);
+            var namePtr = NativeMethods.ptsname(fdm);
             var name = Marshal.PtrToStringAnsi(namePtr);
-            var fds = Native.open(name, (int)Native.O_RDWR);
+            var fds = NativeMethods.open(name, (int)NativeMethods.O_RDWR);
 
             var fileActions = Marshal.AllocHGlobal(1024);
-            Native.posix_spawn_file_actions_init(fileActions);
-            res = Native.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 0);
-            res = Native.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 1);
-            res = Native.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 2);
-            res = Native.posix_spawn_file_actions_addclose(fileActions, (int)fdm);
-            res = Native.posix_spawn_file_actions_addclose(fileActions, (int)fds);
+            NativeMethods.posix_spawn_file_actions_init(fileActions);
+            res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 0);
+            res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 1);
+            res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 2);
+            res = NativeMethods.posix_spawn_file_actions_addclose(fileActions, (int)fdm);
+            res = NativeMethods.posix_spawn_file_actions_addclose(fileActions, (int)fds);
 
 
             var attributes = Marshal.AllocHGlobal(1024);
-            res = Native.posix_spawnattr_init(attributes);
+            res = NativeMethods.posix_spawnattr_init(attributes);
 
             var envVars = new List<string>();
             var env = Environment.GetEnvironmentVariables();
@@ -51,9 +51,9 @@ namespace Pty4Net.Unix
             argsArray.AddRange(arguments);
             argsArray.Add(null);
 
-            res = Native.posix_spawnp(out var pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());
+            res = NativeMethods.posix_spawnp(out var pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());
 
-            var stdin = Native.dup(fdm);
+            var stdin = NativeMethods.dup(fdm);
             var process = Process.GetProcessById((int)pid);
             return new UnixPseudoTerminal(process, fds, stdin, new FileStream(new SafeFileHandle(new IntPtr(stdin), true), FileAccess.Write), new FileStream(new SafeFileHandle(new IntPtr(fdm), true), FileAccess.Read));
         }

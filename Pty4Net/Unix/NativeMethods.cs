@@ -77,7 +77,7 @@ namespace Pty4Net.Unix
         public delegate int getdtablesize();
     }
 
-    internal static class Native
+    internal static class NativeMethods
     {
         public const int O_RDONLY = 0x0000;
         public const int O_WRONLY = 0x0001;

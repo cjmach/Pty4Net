@@ -32,9 +32,9 @@ namespace Pty4Net.Unix
         {
             if (args.Length > 2 && args[0] == "--trampoline")
             {
-                Native.setsid();
-                Native.ioctl(0, Native.TIOCSCTTY, IntPtr.Zero);
-                Native.chdir(args[1]);
+                NativeMethods.setsid();
+                NativeMethods.ioctl(0, NativeMethods.TIOCSCTTY, IntPtr.Zero);
+                NativeMethods.chdir(args[1]);
 
                 var envVars = new List<string>();
                 var env = Environment.GetEnvironmentVariables();
@@ -53,7 +53,7 @@ namespace Pty4Net.Unix
                 var argsArray = args.Skip(3).ToList();
                 argsArray.Add(null);
 
-                Native.execve(args[2], argsArray.ToArray(), envVars.ToArray());
+                NativeMethods.execve(args[2], argsArray.ToArray(), envVars.ToArray());
             }
             else
             {
@@ -89,7 +89,7 @@ namespace Pty4Net.Unix
             {
                 var buf = Marshal.AllocHGlobal(count);
                 Marshal.Copy(buffer, offset, buf, count);
-                Native.write(_cfg, buf, count);
+                NativeMethods.write(_cfg, buf, count);
 
                 Marshal.FreeHGlobal(buf);
             });
@@ -97,14 +97,14 @@ namespace Pty4Net.Unix
 
         public void SetSize(int columns, int rows)
         {
-            Native.winsize size = new Native.winsize();
+            NativeMethods.winsize size = new NativeMethods.winsize();
             int ret;
             size.ws_row = (ushort)(rows > 0 ? rows : 24);
             size.ws_col = (ushort)(columns > 0 ? columns : 80);
 
-            var ptr = Native.StructToPtr(size);
+            var ptr = NativeMethods.StructToPtr(size);
 
-            ret = Native.ioctl(_cfg, Native.TIOCSWINSZ, ptr);
+            ret = NativeMethods.ioctl(_cfg, NativeMethods.TIOCSWINSZ, ptr);
 
             Marshal.FreeHGlobal(ptr);
 
