@@ -1,2 +1,2 @@
-# Avalonia.TerminalEmulator
-Avalonia control that allows embedding applications inside an emulated terminal.
+# Pty4Net
+Cross-platform pseudo terminal (PTY) implementation in .NET.
