@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 
 namespace AvalonStudio.Terminals.Unix
 {
-    public class UnixPsuedoTerminalProvider : IPsuedoTerminalProvider
+    public class UnixPsuedoTerminalProvider : IPseudoTerminalProvider
     {
-        public IPsuedoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
+        public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {
             var fdm = Native.open("/dev/ptmx", Native.O_RDWR | Native.O_NOCTTY);
 

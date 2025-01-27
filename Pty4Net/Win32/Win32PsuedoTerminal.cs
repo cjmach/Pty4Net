@@ -6,7 +6,7 @@ using static winpty.WinPty;
 
 namespace AvalonStudio.Terminals.Win32
 {
-    public class Win32PsuedoTerminal : IPsuedoTerminal
+    public class Win32PsuedoTerminal : IPseudoTerminal
     {
         private IntPtr _handle = IntPtr.Zero;
         private IntPtr _err = IntPtr.Zero;

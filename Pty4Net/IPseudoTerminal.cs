@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace AvalonStudio.Terminals
 {
-    public interface IPsuedoTerminal : IDisposable
+    public interface IPseudoTerminal : IDisposable
     {
         void SetSize(int columns, int rows);
 

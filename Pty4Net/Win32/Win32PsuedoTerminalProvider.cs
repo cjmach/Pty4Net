@@ -7,7 +7,7 @@ using static winpty.WinPty;
 
 namespace AvalonStudio.Terminals.Win32
 {
-    public class Win32PsuedoTerminalProvider : IPsuedoTerminalProvider
+    public class Win32PsuedoTerminalProvider : IPseudoTerminalProvider
     {
         private static IntPtr TryGetHandle(Process p)
         {
@@ -25,7 +25,7 @@ namespace AvalonStudio.Terminals.Win32
             return result;
         }
 
-        public IPsuedoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
+        public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {
             var cfg = winpty_config_new(WINPTY_FLAG_COLOR_ESCAPES, out IntPtr err);
             winpty_config_set_initial_size(cfg, columns, rows);

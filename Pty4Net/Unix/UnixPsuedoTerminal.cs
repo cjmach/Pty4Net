@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AvalonStudio.Terminals.Unix
 {
-    public class UnixPsuedoTerminal : IPsuedoTerminal
+    public class UnixPsuedoTerminal : IPseudoTerminal
     {
         private int _handle;
         private int _cfg;

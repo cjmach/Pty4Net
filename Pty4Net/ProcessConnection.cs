@@ -10,9 +10,9 @@ namespace AvalonStudio.Terminals
     {
         private CancellationTokenSource _cancellationSource;
         private bool _isConnected = false;
-        private IPsuedoTerminal _terminal;
+        private IPseudoTerminal _terminal;
 
-        public PsuedoTerminalConnection(IPsuedoTerminal terminal)
+        public PsuedoTerminalConnection(IPseudoTerminal terminal)
         {
             _terminal = terminal;
         }
