@@ -97,7 +97,7 @@ namespace Pty4Net.Unix
 
         public void SetSize(int columns, int rows)
         {
-            NativeMethods.winsize size = new NativeMethods.winsize();
+            NativeMethods.WinSize size = new NativeMethods.WinSize();
             int ret;
             size.ws_row = (ushort)(rows > 0 ? rows : 24);
             size.ws_col = (ushort)(columns > 0 ? columns : 80);
@@ -110,14 +110,6 @@ namespace Pty4Net.Unix
 
             var error = Marshal.GetLastWin32Error();
         }
-
-        public struct winsize
-        {
-            public ushort ws_row;   /* rows, in characters */
-            public ushort ws_col;   /* columns, in characters */
-            public ushort ws_xpixel;    /* horizontal size, pixels */
-            public ushort ws_ypixel;    /* vertical size, pixels */
-        };
 
         public Process Process => _process;
     }
