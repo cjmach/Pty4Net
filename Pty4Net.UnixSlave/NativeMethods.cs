@@ -41,7 +41,7 @@ internal class NativeMethods
         }
         else 
         {
-            throw new NotSupportedException("OS not supported.");
+            throw new PlatformNotSupportedException();
         }
         IntPtr libHandle = NativeLibrary.Load(libName, typeof(NativeMethods).Assembly, DllImportSearchPath.LegacyBehavior);
 
