@@ -5,7 +5,7 @@ using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using static winpty.WinPty;
 
-namespace AvalonStudio.Terminals.Win32
+namespace Pty4Net.Win32
 {
     public class Win32PseudoTerminalProvider : IPseudoTerminalProvider
     {

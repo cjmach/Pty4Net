@@ -1,4 +1,4 @@
-﻿namespace AvalonStudio.Terminals
+﻿namespace Pty4Net
 {
     public interface IPseudoTerminalProvider
     {

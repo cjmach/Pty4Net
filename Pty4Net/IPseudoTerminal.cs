@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace AvalonStudio.Terminals
+namespace Pty4Net
 {
     public interface IPseudoTerminal : IDisposable
     {

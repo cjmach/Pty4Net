@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static winpty.WinPty;
 
-namespace AvalonStudio.Terminals.Win32
+namespace Pty4Net.Win32
 {
     public class Win32PseudoTerminal : IPseudoTerminal
     {

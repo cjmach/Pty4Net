@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AvalonStudio.Terminals.Unix
+namespace Pty4Net.Unix
 {
     internal class NativeDelegates
     {

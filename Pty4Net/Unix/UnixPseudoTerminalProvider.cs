@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace AvalonStudio.Terminals.Unix
+namespace Pty4Net.Unix
 {
     public class UnixPseudoTerminalProvider : IPseudoTerminalProvider
     {

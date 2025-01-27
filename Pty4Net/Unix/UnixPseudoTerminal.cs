@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace AvalonStudio.Terminals.Unix
+namespace Pty4Net.Unix
 {
     public class UnixPseudoTerminal : IPseudoTerminal
     {
