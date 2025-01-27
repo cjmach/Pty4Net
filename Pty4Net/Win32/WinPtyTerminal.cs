@@ -6,7 +6,7 @@ using static winpty.WinPty;
 
 namespace Pty4Net.Win32
 {
-    internal class Win32PseudoTerminal : IPseudoTerminal
+    internal class WinPtyTerminal : IPseudoTerminal
     {
         private IntPtr _handle = IntPtr.Zero;
         private IntPtr _err = IntPtr.Zero;
@@ -17,7 +17,7 @@ namespace Pty4Net.Win32
         private Process _process;
         private bool _isDisposed = false;
 
-        internal Win32PseudoTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout)
+        internal WinPtyTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout)
         {
             _process = process;
 

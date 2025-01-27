@@ -12,7 +12,7 @@ namespace Pty4Net
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Provider = new Lazy<IPseudoTerminalProvider>(() => new Win32PseudoTerminalProvider());
+                Provider = new Lazy<IPseudoTerminalProvider>(() => new WinPtyTerminalProvider());
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {

@@ -7,7 +7,7 @@ using static winpty.WinPty;
 
 namespace Pty4Net.Win32
 {
-    internal class Win32PseudoTerminalProvider : IPseudoTerminalProvider
+    internal class WinPtyTerminalProvider : IPseudoTerminalProvider
     {
         private static IntPtr TryGetHandle(Process p)
         {
@@ -62,7 +62,7 @@ namespace Pty4Net.Win32
 
             var terminalProcess = Process.GetProcessById(id);
 
-            return new Win32PseudoTerminal(terminalProcess, handle, cfg, spawnCfg, err, stdin, stdout);
+            return new WinPtyTerminal(terminalProcess, handle, cfg, spawnCfg, err, stdin, stdout);
         }
 
         [DllImport("kernel32.dll")]
