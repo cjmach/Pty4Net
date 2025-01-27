@@ -7,7 +7,7 @@ using static winpty.WinPty;
 
 namespace AvalonStudio.Terminals.Win32
 {
-    public class Win32PsuedoTerminalProvider : IPseudoTerminalProvider
+    public class Win32PseudoTerminalProvider : IPseudoTerminalProvider
     {
         private static IntPtr TryGetHandle(Process p)
         {
@@ -62,7 +62,7 @@ namespace AvalonStudio.Terminals.Win32
 
             var terminalProcess = Process.GetProcessById(id);                      
 
-            return new Win32PsuedoTerminal(terminalProcess, handle, cfg, spawnCfg, err, stdin, stdout);
+            return new Win32PseudoTerminal(terminalProcess, handle, cfg, spawnCfg, err, stdin, stdout);
         }
 
         [DllImport("kernel32.dll")]

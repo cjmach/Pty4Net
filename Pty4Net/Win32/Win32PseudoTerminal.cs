@@ -6,7 +6,7 @@ using static winpty.WinPty;
 
 namespace AvalonStudio.Terminals.Win32
 {
-    public class Win32PsuedoTerminal : IPseudoTerminal
+    public class Win32PseudoTerminal : IPseudoTerminal
     {
         private IntPtr _handle = IntPtr.Zero;
         private IntPtr _err = IntPtr.Zero;
@@ -17,7 +17,7 @@ namespace AvalonStudio.Terminals.Win32
         private Process _process;
         private bool _isDisposed = false;
 
-        public Win32PsuedoTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout)
+        public Win32PseudoTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout)
         {
             _process = process;
 

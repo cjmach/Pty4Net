@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace AvalonStudio.Terminals.Unix
 {
-    public class UnixPsuedoTerminalProvider : IPseudoTerminalProvider
+    public class UnixPseudoTerminalProvider : IPseudoTerminalProvider
     {
         public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {
@@ -55,7 +55,7 @@ namespace AvalonStudio.Terminals.Unix
 
             var stdin = Native.dup(fdm);
             var process = Process.GetProcessById((int)pid);
-            return new UnixPsuedoTerminal(process, fds, stdin, new FileStream(new SafeFileHandle(new IntPtr(stdin), true), FileAccess.Write), new FileStream(new SafeFileHandle(new IntPtr(fdm), true), FileAccess.Read));
+            return new UnixPseudoTerminal(process, fds, stdin, new FileStream(new SafeFileHandle(new IntPtr(stdin), true), FileAccess.Write), new FileStream(new SafeFileHandle(new IntPtr(fdm), true), FileAccess.Read));
         }
     }
 }
