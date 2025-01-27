@@ -61,7 +61,7 @@ namespace Pty4Net.Unix
         public delegate IntPtr ptsname(int fd);
         public delegate int grantpt(int fd);
         public delegate int unlockpt(int fd);
-        public unsafe delegate void execve([MarshalAs(UnmanagedType.LPStr)]string path, [MarshalAs(UnmanagedType.LPArray)]string[] argv, [MarshalAs(UnmanagedType.LPArray)]string[] envp);
+        public delegate void execve([MarshalAs(UnmanagedType.LPStr)]string path, [MarshalAs(UnmanagedType.LPArray)]string[] argv, [MarshalAs(UnmanagedType.LPArray)]string[] envp);
         public delegate int read(int fd, IntPtr buffer, int length);
         public delegate int write(int fd, IntPtr buffer, int length);
         public delegate void free(IntPtr ptr);
