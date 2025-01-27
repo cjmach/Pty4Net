@@ -17,7 +17,7 @@ namespace Pty4Net.Win32
             {
                 result = p.Handle;
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }
