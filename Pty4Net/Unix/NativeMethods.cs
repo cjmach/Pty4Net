@@ -78,7 +78,11 @@ namespace Pty4Net.Unix
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawn_file_actions_init(IntPtr file_actions);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        internal delegate int posix_spawn_file_actions_destroy(IntPtr file_actions);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawnattr_init(IntPtr attributes);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        internal delegate int posix_spawnattr_destroy(IntPtr attributes);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawnp(out IntPtr pid, string path, IntPtr fileActions, IntPtr attrib, string[] argv, string[] envp);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
@@ -130,13 +134,15 @@ namespace Pty4Net.Unix
         internal static NativeDelegates.Unlockpt unlockpt = NativeDelegates.GetProc<NativeDelegates.Unlockpt>();
         internal static NativeDelegates.Ptsname ptsname = NativeDelegates.GetProc<NativeDelegates.Ptsname>();
         internal static NativeDelegates.posix_spawn_file_actions_init posix_spawn_file_actions_init = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_init>();
+        internal static NativeDelegates.posix_spawn_file_actions_destroy posix_spawn_file_actions_destroy = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_destroy>();
         internal static NativeDelegates.posix_spawn_file_actions_adddup2 posix_spawn_file_actions_adddup2 = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_adddup2>();
         internal static NativeDelegates.posix_spawn_file_actions_addclose posix_spawn_file_actions_addclose = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_addclose>();
         internal static NativeDelegates.posix_spawnattr_init posix_spawnattr_init = NativeDelegates.GetProc<NativeDelegates.posix_spawnattr_init>();
+        internal static NativeDelegates.posix_spawnattr_destroy posix_spawnattr_destroy = NativeDelegates.GetProc<NativeDelegates.posix_spawnattr_destroy>();
         internal static NativeDelegates.posix_spawnp posix_spawnp = NativeDelegates.GetProc<NativeDelegates.posix_spawnp>();
         internal static NativeDelegates.Dup dup = NativeDelegates.GetProc<NativeDelegates.Dup>();
         internal static NativeDelegates.Setsid setsid = NativeDelegates.GetProc<NativeDelegates.Setsid>();
-        internal static NativeDelegates.Ioctl ioctl = NativeDelegates.GetProc<NativeDelegates.Ioctl>();        
+        internal static NativeDelegates.Ioctl ioctl = NativeDelegates.GetProc<NativeDelegates.Ioctl>();
         internal static NativeDelegates.Execve execve = NativeDelegates.GetProc<NativeDelegates.Execve>();
 
         internal static IntPtr StructToPtr(object obj)

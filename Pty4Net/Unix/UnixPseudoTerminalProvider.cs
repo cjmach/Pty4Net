@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,51 +12,74 @@ namespace Pty4Net.Unix
     {
         public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {
-            var fdm = NativeMethods.open("/dev/ptmx", NativeMethods.O_RDWR | NativeMethods.O_NOCTTY);
+            IntPtr fileActions = IntPtr.Zero;
+            IntPtr attributes = IntPtr.Zero;
 
-            var res = NativeMethods.grantpt(fdm);
-            res = NativeMethods.unlockpt(fdm);
+            int master = NativeMethods.open("/dev/ptmx", NativeMethods.O_RDWR | NativeMethods.O_NOCTTY);
 
-            var namePtr = NativeMethods.ptsname(fdm);
-            var name = Marshal.PtrToStringAnsi(namePtr);
-            var fds = NativeMethods.open(name, (int)NativeMethods.O_RDWR);
+            int res = NativeMethods.grantpt(master);
+            res = NativeMethods.unlockpt(master);
 
-            var fileActions = Marshal.AllocHGlobal(1024);
-            NativeMethods.posix_spawn_file_actions_init(fileActions);
-            res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 0);
-            res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 1);
-            res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, (int)fds, 2);
-            res = NativeMethods.posix_spawn_file_actions_addclose(fileActions, (int)fdm);
-            res = NativeMethods.posix_spawn_file_actions_addclose(fileActions, (int)fds);
+            IntPtr namePtr = NativeMethods.ptsname(master);
+            string name = Marshal.PtrToStringAnsi(namePtr);
+            int slave = NativeMethods.open(name, NativeMethods.O_RDWR);
 
-
-            var attributes = Marshal.AllocHGlobal(1024);
-            res = NativeMethods.posix_spawnattr_init(attributes);
-
-            var envVars = new List<string>();
-            var env = Environment.GetEnvironmentVariables();
-
-            foreach(var variable in env.Keys)
+            try
             {
-                if(variable.ToString() != "TERM")
+                fileActions = Marshal.AllocHGlobal(1024);
+                NativeMethods.posix_spawn_file_actions_init(fileActions);
+                res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, slave, 0);
+                res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, slave, 1);
+                res = NativeMethods.posix_spawn_file_actions_adddup2(fileActions, slave, 2);
+                res = NativeMethods.posix_spawn_file_actions_addclose(fileActions, master);
+                res = NativeMethods.posix_spawn_file_actions_addclose(fileActions, slave);
+
+
+                attributes = Marshal.AllocHGlobal(1024);
+                res = NativeMethods.posix_spawnattr_init(attributes);
+
+                List<string> envVars = new List<string>();
+                IDictionary env = Environment.GetEnvironmentVariables();
+
+                foreach (string variable in env.Keys)
                 {
-                    envVars.Add($"{variable}={env[variable]}");
+                    if (variable != "TERM")
+                    {
+                        envVars.Add($"{variable}={env[variable]}");
+                    }
+                }
+
+                envVars.Add("TERM=xterm-256color");
+                envVars.Add(null);
+
+                string path = typeof(UnixSlave.Program).Assembly.Location;
+                List<string> argsArray = new List<string> { "dotnet", path, "-d", initialDirectory, "-s", command };
+                argsArray.AddRange(arguments);
+                argsArray.Add(null);
+
+                res = NativeMethods.posix_spawnp(out IntPtr pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());
+
+                int stdin = NativeMethods.dup(master);
+                Process process = Process.GetProcessById(pid.ToInt32());
+                return new UnixPseudoTerminal(process, 
+                                              slave, 
+                                              stdin, 
+                                              new FileStream(new SafeFileHandle(new IntPtr(stdin), true), FileAccess.Write), 
+                                              new FileStream(new SafeFileHandle(new IntPtr(master), true), FileAccess.Read));
+            }
+            finally
+            {
+                if (fileActions != IntPtr.Zero)
+                {
+                    NativeMethods.posix_spawn_file_actions_destroy(fileActions);
+                    Marshal.FreeHGlobal(fileActions);
+                }
+                if (attributes != IntPtr.Zero)
+                {
+                    NativeMethods.posix_spawnattr_destroy(attributes);
+                    Marshal.FreeHGlobal(attributes);
                 }
             }
-
-            envVars.Add("TERM=xterm-256color");
-            envVars.Add(null);
-
-            string path = typeof(UnixSlave.Program).Assembly.Location;
-            var argsArray = new List<string> { "dotnet", path, "-d", initialDirectory, "-s", command };
-            argsArray.AddRange(arguments);
-            argsArray.Add(null);
-
-            res = NativeMethods.posix_spawnp(out var pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());
-
-            var stdin = NativeMethods.dup(fdm);
-            var process = Process.GetProcessById((int)pid);
-            return new UnixPseudoTerminal(process, fds, stdin, new FileStream(new SafeFileHandle(new IntPtr(stdin), true), FileAccess.Write), new FileStream(new SafeFileHandle(new IntPtr(fdm), true), FileAccess.Read));
         }
     }
 }
