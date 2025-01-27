@@ -39,29 +39,53 @@ namespace Pty4Net.Unix
             return Marshal.GetDelegateForFunctionPointer<T>(handle);
         }
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate void Dup2(int oldfd, int newfd);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Fork();
-        internal delegate void Setsid();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        internal delegate int Setsid();
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Ioctl(int fd, UInt64 ctl, IntPtr arg);
-        internal delegate void Close(int fd);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        internal delegate int Close(int fd);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Open([MarshalAs(UnmanagedType.LPStr)] string file, int flags);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Chdir([MarshalAs(UnmanagedType.LPStr)] string path);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate IntPtr Ptsname(int fd);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Grantpt(int fd);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Unlockpt(int fd);
-        internal delegate void Execve([MarshalAs(UnmanagedType.LPStr)]string path, [MarshalAs(UnmanagedType.LPArray)]string[] argv, [MarshalAs(UnmanagedType.LPArray)]string[] envp);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        internal delegate int Execve([MarshalAs(UnmanagedType.LPStr)]string path, [MarshalAs(UnmanagedType.LPArray)]string[] argv, [MarshalAs(UnmanagedType.LPArray)]string[] envp);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Read(int fd, IntPtr buffer, int length);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Write(int fd, IntPtr buffer, int length);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate void Free(IntPtr ptr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Pipe(IntPtr[] fds);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Setpgid(int pid, int pgid);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawn_file_actions_adddup2(IntPtr file_actions, int fildes, int newfildes);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawn_file_actions_addclose(IntPtr file_actions, int fildes);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawn_file_actions_init(IntPtr file_actions);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawnattr_init(IntPtr attributes);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawnp(out IntPtr pid, string path, IntPtr fileActions, IntPtr attrib, string[] argv, string[] envp);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Dup(int fd);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate void _exit(int code);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Getdtablesize();
     }
 
