@@ -46,8 +46,8 @@ namespace Pty4Net.Unix
             envVars.Add("TERM=xterm-256color");
             envVars.Add(null);
 
-            var path = System.Reflection.Assembly.GetEntryAssembly().Location;
-            var argsArray = new List<string> { "dotnet", path, "--trampoline", initialDirectory, command };
+            string path = typeof(UnixSlave.Program).Assembly.Location;
+            var argsArray = new List<string> { "dotnet", path, "-d", initialDirectory, "-s", command };
             argsArray.AddRange(arguments);
             argsArray.Add(null);
 
