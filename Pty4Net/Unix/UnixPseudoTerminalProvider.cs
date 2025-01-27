@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Pty4Net.Unix
 {
-    public class UnixPseudoTerminalProvider : IPseudoTerminalProvider
+    internal class UnixPseudoTerminalProvider : IPseudoTerminalProvider
     {
         public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {

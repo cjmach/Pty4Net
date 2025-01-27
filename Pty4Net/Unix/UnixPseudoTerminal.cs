@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Pty4Net.Unix
 {
-    public class UnixPseudoTerminal : IPseudoTerminal
+    internal class UnixPseudoTerminal : IPseudoTerminal
     {
         private int _handle;
         private int _cfg;
@@ -17,7 +14,7 @@ namespace Pty4Net.Unix
         private Process _process;
         private bool _isDisposed = false;
 
-        public UnixPseudoTerminal(Process process, int handle, int cfg, Stream stdin, Stream stdout)
+        internal UnixPseudoTerminal(Process process, int handle, int cfg, Stream stdin, Stream stdout)
         {
             _process = process;
 
@@ -26,39 +23,6 @@ namespace Pty4Net.Unix
             _stdout = stdout;
 
             _cfg = cfg;
-        }
-
-        public static void Trampoline(string[] args)
-        {
-            if (args.Length > 2 && args[0] == "--trampoline")
-            {
-                NativeMethods.setsid();
-                NativeMethods.ioctl(0, NativeMethods.TIOCSCTTY, IntPtr.Zero);
-                NativeMethods.chdir(args[1]);
-
-                var envVars = new List<string>();
-                var env = Environment.GetEnvironmentVariables();
-
-                foreach (var variable in env.Keys)
-                {
-                    if (variable.ToString() != "TERM")
-                    {
-                        envVars.Add($"{variable}={env[variable]}");
-                    }
-                }
-
-                envVars.Add("TERM=xterm-256color");
-                envVars.Add(null);
-
-                var argsArray = args.Skip(3).ToList();
-                argsArray.Add(null);
-
-                NativeMethods.execve(args[2], argsArray.ToArray(), envVars.ToArray());
-            }
-            else
-            {
-                return;
-            }
         }
 
         public void Dispose()
