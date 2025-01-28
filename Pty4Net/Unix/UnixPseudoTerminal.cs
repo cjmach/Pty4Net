@@ -24,10 +24,6 @@ namespace Pty4Net.Unix
             _stdout = stdout;
 
             _cfg = cfg;
-
-            Task.Run(() => { 
-                NativeMethods.waitpid(_process.Id, IntPtr.Zero, 0);
-            });
         }
 
         public void Dispose()

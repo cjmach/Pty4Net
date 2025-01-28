@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Pty4Net.Unix
 {
@@ -59,8 +60,11 @@ namespace Pty4Net.Unix
 
                 res = NativeMethods.posix_spawnp(out IntPtr pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());
 
-                int stdin = NativeMethods.dup(master);
                 Process process = Process.GetProcessById(pid.ToInt32());
+                Task.Run(() => { 
+                    NativeMethods.waitpid(process.Id, IntPtr.Zero, 0);
+                });
+                int stdin = NativeMethods.dup(master);
                 return new UnixPseudoTerminal(process, 
                                               slave, 
                                               stdin, 
