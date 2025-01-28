@@ -56,11 +56,16 @@ namespace Pty4Net.Unix
 
             await Task.Run(() =>
             {
-                var buf = Marshal.AllocHGlobal(count);
-                Marshal.Copy(buffer, offset, buf, count);
-                NativeMethods.write(_cfg, buf, count);
-
-                Marshal.FreeHGlobal(buf);
+                IntPtr buf = Marshal.AllocHGlobal(count);
+                try
+                {
+                    Marshal.Copy(buffer, offset, buf, count);
+                    NativeMethods.write(_cfg, buf, count);
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(buf);
+                }
             });
         }
 
@@ -71,13 +76,16 @@ namespace Pty4Net.Unix
             size.ws_row = (ushort)(rows > 0 ? rows : 24);
             size.ws_col = (ushort)(columns > 0 ? columns : 80);
 
-            var ptr = NativeMethods.StructToPtr(size);
-
-            ret = NativeMethods.ioctl(_cfg, NativeMethods.TIOCSWINSZ, ptr);
-
-            Marshal.FreeHGlobal(ptr);
-
-            var error = Marshal.GetLastWin32Error();
+            IntPtr ptr = NativeMethods.StructToPtr(size);
+            try
+            {
+                ret = NativeMethods.ioctl(_cfg, NativeMethods.TIOCSWINSZ, ptr);
+                var error = Marshal.GetLastWin32Error();
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
         }
 
         public Process Process => _process;
