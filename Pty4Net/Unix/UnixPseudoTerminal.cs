@@ -26,7 +26,7 @@ namespace Pty4Net.Unix
             _cfg = cfg;
 
             Task.Run(() => { 
-                int pid = NativeMethods.wait(IntPtr.Zero);
+                NativeMethods.waitpid(_process.Id, IntPtr.Zero, 0);
             });
         }
 
