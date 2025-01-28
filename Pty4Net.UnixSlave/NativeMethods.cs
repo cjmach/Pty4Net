@@ -17,12 +17,21 @@ internal delegate int Execve([MarshalAs(UnmanagedType.LPStr)] string path,
                            [MarshalAs(UnmanagedType.LPArray)] string[] argv, 
                            [MarshalAs(UnmanagedType.LPArray)] string[] envp);
 
+[UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+internal delegate int Fork();
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+internal delegate int Wait(IntPtr status);
+
+
 internal class NativeMethods
 {
     private static readonly SetSid SetSidDelegate;
     private static readonly Ioctl IoctlDelegate;
     private static readonly Chdir ChdirDelegate;
     private static readonly Execve ExecveDelegate;
+    private static readonly Fork ForkDelegate;
+    private static readonly Wait WaitDelegate;
 
     internal static readonly ulong TIOCSCTTY;
 
@@ -49,6 +58,8 @@ internal class NativeMethods
         IoctlDelegate = GetDelegate<Ioctl>(libHandle, "ioctl");
         ChdirDelegate = GetDelegate<Chdir>(libHandle, "chdir");
         ExecveDelegate = GetDelegate<Execve>(libHandle, "execve");
+        ForkDelegate = GetDelegate<Fork>(libHandle, "fork");
+        WaitDelegate = GetDelegate<Wait>(libHandle, "wait");
     }
 
     private static T GetDelegate<T>(IntPtr libHandle, string name) where T : Delegate {
@@ -70,5 +81,13 @@ internal class NativeMethods
 
     internal static int Execve(string path, string[] argv, string[] envp) {
         return ExecveDelegate.Invoke(path, argv, envp);
+    }
+
+    internal static int Fork() {
+        return ForkDelegate.Invoke();
+    }
+
+    internal static int Wait(IntPtr status) {
+        return WaitDelegate.Invoke(status);
     }
 }

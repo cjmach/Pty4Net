@@ -62,6 +62,8 @@ namespace Pty4Net.Unix
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Execve([MarshalAs(UnmanagedType.LPStr)]string path, [MarshalAs(UnmanagedType.LPArray)]string[] argv, [MarshalAs(UnmanagedType.LPArray)]string[] envp);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
+        internal delegate int Wait(IntPtr status);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Read(int fd, IntPtr buffer, int length);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Write(int fd, IntPtr buffer, int length);
@@ -133,6 +135,7 @@ namespace Pty4Net.Unix
         internal static NativeDelegates.Grantpt grantpt = NativeDelegates.GetProc<NativeDelegates.Grantpt>();
         internal static NativeDelegates.Unlockpt unlockpt = NativeDelegates.GetProc<NativeDelegates.Unlockpt>();
         internal static NativeDelegates.Ptsname ptsname = NativeDelegates.GetProc<NativeDelegates.Ptsname>();
+        internal static NativeDelegates.Wait wait = NativeDelegates.GetProc<NativeDelegates.Wait>();
         internal static NativeDelegates.posix_spawn_file_actions_init posix_spawn_file_actions_init = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_init>();
         internal static NativeDelegates.posix_spawn_file_actions_destroy posix_spawn_file_actions_destroy = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_destroy>();
         internal static NativeDelegates.posix_spawn_file_actions_adddup2 posix_spawn_file_actions_adddup2 = NativeDelegates.GetProc<NativeDelegates.posix_spawn_file_actions_adddup2>();

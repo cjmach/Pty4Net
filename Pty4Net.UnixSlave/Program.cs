@@ -57,7 +57,7 @@ public class Program {
         if (Ioctl(0, TIOCSCTTY, IntPtr.Zero) < 0) {
             throw new InvalidOperationException("Failed to call ioctl(2).");
         }
-        Chdir(args[1]);
+        Chdir(cwd);
 
         List<string> envVars = new List<string>();
         IDictionary env = Environment.GetEnvironmentVariables();
