@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -67,6 +68,7 @@ public class Program {
         }
         envVars.Add(null);
 
+        shellArgs.Insert(0, Path.GetFileName(shell));
         shellArgs.Add(null);
 
         Execve(shell, shellArgs.ToArray(), envVars.ToArray());
