@@ -11,7 +11,7 @@ namespace Pty4Net.Win32
         /// <summary>
         /// 
         /// </summary>
-        private static readonly bool IsConPtySupported;
+        private static readonly IPseudoTerminalProvider Provider;
 
         /// <summary>
         /// 
@@ -22,11 +22,14 @@ namespace Pty4Net.Win32
             try
             {
                 IntPtr handle = NativeLibrary.GetExport(kernelLib, "CreatePseudoConsole");
-                IsConPtySupported = handle != IntPtr.Zero; // paranoia check
+                if (handle != IntPtr.Zero) // paranoia check
+                {
+                    Provider = new ConPtyTerminalProvider();
+                }
             }
             catch (EntryPointNotFoundException)
             {
-                IsConPtySupported = false;
+                Provider = new WinPtyTerminalProvider();
             }
             finally
             {
@@ -41,16 +44,7 @@ namespace Pty4Net.Win32
         /// <returns></returns>
         public IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options)
         {
-            IPseudoTerminalProvider provider;
-            if (IsConPtySupported)
-            {
-                provider = new ConPtyTerminalProvider();
-            }
-            else
-            {
-                provider = new WinPtyTerminalProvider();
-            }
-            return provider.CreatePseudoTerminal(options);
+            return Provider.CreatePseudoTerminal(options);
         }
     }
 }
