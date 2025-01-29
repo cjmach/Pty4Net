@@ -65,6 +65,26 @@ namespace Pty4Net
         /// </summary>
         public string[] Arguments { get; set; } = Array.Empty<string>();
 
+        internal void Validate() 
+        {
+            if (Columns <= 0)
+            {
+                throw new ArgumentException("Columns must be positive.", nameof(Columns));
+            }
+            if (Columns <= 0)
+            {
+                throw new ArgumentException("Rows must be positive.", nameof(Rows));
+            }
+            ArgumentNullException.ThrowIfNullOrEmpty(InitialDirectory, nameof(InitialDirectory));
+            ArgumentNullException.ThrowIfNull(Environment, nameof(Environment));
+            ArgumentNullException.ThrowIfNullOrEmpty(Command, nameof(Command));
+            ArgumentNullException.ThrowIfNull(Arguments, nameof(Arguments));
+            if (!File.Exists(Command))
+            {
+                throw new ArgumentException("Path to command not found: " + Command, nameof(Command));
+            }
+        }
+
         /// <summary>
         /// Creates a new instance configured with the default options for
         /// the current system.

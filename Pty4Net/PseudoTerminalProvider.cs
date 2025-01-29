@@ -50,6 +50,7 @@ namespace Pty4Net
         /// <param name="options">The options allow to customize how the instance is created.</param>
         /// <returns>A reference to a new <see cref="IPseudoTerminal"/> instance.</returns>
         public static IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options) {
+            options.Validate();
             return Provider.Value.CreatePseudoTerminal(options);
         }
     }
