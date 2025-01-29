@@ -45,11 +45,6 @@ namespace Pty4Net.Unix
 
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            if (buffer.Length == 1 && buffer[0] == 10)
-            {
-                buffer[0] = 13;
-            }
-
             await Task.Run(() =>
             {
                 IntPtr buf = Marshal.AllocHGlobal(count);

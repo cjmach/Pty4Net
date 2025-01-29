@@ -22,8 +22,8 @@ namespace Pty4Net.Win32 {
             this.console = console;
             this.input = input;
             this.output = output;
-            this.reader = new AnonymousPipeClientStream(PipeDirection.In, input.WriteSide);
-            this.writer = new AnonymousPipeClientStream(PipeDirection.Out, output.ReadSide);
+            this.reader = new AnonymousPipeClientStream(PipeDirection.In, output.ReadSide);
+            this.writer = new AnonymousPipeClientStream(PipeDirection.Out, input.WriteSide);
         }
 
         public void Dispose()
@@ -36,23 +36,30 @@ namespace Pty4Net.Win32 {
             input.Dispose();
         }
 
-        public Task<int> ReadAsync(byte[] buffer, int offset, int count)
+        public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
-            return reader.ReadAsync(buffer, offset, count);
+            return await reader.ReadAsync(buffer, offset, count);
         }
 
         public void SetSize(int columns, int rows)
         {
-            NativeMethods.COORD size = new NativeMethods.COORD(columns, rows);
-            int result = NativeMethods.ResizePseudoConsole(console.Handle, size);
-            if (result != 0) {
-                Marshal.ThrowExceptionForHR(result);
+            if (columns >= 1 && rows >= 1) 
+            {
+                NativeMethods.COORD size = new NativeMethods.COORD(columns, rows);
+                int result = NativeMethods.ResizePseudoConsole(console.Handle, size);
+                if (result != 0) 
+                {
+                    Marshal.ThrowExceptionForHR(result);
+                }
             }
         }
 
-        public Task WriteAsync(byte[] buffer, int offset, int count)
+        public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            return writer.WriteAsync(buffer, offset, count);
+            if (buffer.Length == 1 && buffer[0] == 10) {
+                buffer[0] = 13;
+            }
+            await writer.WriteAsync(buffer, offset, count);
         }
     }
 }
