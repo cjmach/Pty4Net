@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 namespace Pty4Net.Win32
 {
     /// <summary>
-    /// 
+    /// ConPty Pseudo-terminal implementation for Windows systems.
     /// </summary>
+    /// <see href="https://devblogs.microsoft.com/commandline/windows-command-line-introducing-the-windows-pseudo-console-conpty/" />
     internal class ConPtyTerminal : BasePseudoTerminal
     {
         /// <summary>

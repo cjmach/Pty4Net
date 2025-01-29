@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Pty4Net.Unix
 {
     /// <summary>
-    /// 
+    /// Pseudo-terminal implementation for Unix systems.
     /// </summary>
     internal class UnixPseudoTerminal : BasePseudoTerminal
     {
@@ -29,12 +29,12 @@ namespace Pty4Net.Unix
         private bool isDisposed;
 
         /// <summary>
-        /// 
+        /// Constructor.
         /// </summary>
-        /// <param name="process"></param>
-        /// <param name="cfg"></param>
-        /// <param name="stdin"></param>
-        /// <param name="stdout"></param>
+        /// <param name="process">The terminal process.</param>
+        /// <param name="cfg">The file descriptor of the terminal.</param>
+        /// <param name="stdin">Stream which will be used to send data to terminal's stdin.</param>
+        /// <param name="stdout">Stream which will be used to read data from terminal's stdout.</param>
         internal UnixPseudoTerminal(Process process, int cfg, Stream stdin, Stream stdout) : base(process)
         {
             this.stdin = stdin;
@@ -44,7 +44,7 @@ namespace Pty4Net.Unix
         }
 
         /// <summary>
-        /// 
+        /// Disposes the streams.
         /// </summary>
         public override void Dispose()
         {
@@ -79,10 +79,7 @@ namespace Pty4Net.Unix
         /// <returns></returns>
         public override async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            await Task.Run(() =>
-            {
-                NativeMethods.write(cfg, buffer, count);
-            });
+            await stdin.WriteAsync(buffer, offset, count);
         }
 
         /// <summary>

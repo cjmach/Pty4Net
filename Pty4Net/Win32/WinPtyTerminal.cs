@@ -7,8 +7,9 @@ using static winpty.WinPty;
 namespace Pty4Net.Win32
 {
     /// <summary>
-    /// 
+    /// WinPty Pseudo-terminal implementation for Windows systems.
     /// </summary>
+    /// <see href="https://github.com/rprichard/winpty"/>
     internal class WinPtyTerminal : BasePseudoTerminal
     {
         /// <summary>

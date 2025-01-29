@@ -72,10 +72,9 @@ namespace Pty4Net.Unix
                 Task.Run(() => { 
                     NativeMethods.waitpid(process.Id, IntPtr.Zero, 0);
                 });
-                int stdin = NativeMethods.dup(master);
                 return new UnixPseudoTerminal(process,
-                                              stdin, 
-                                              new FileStream(new SafeFileHandle(new IntPtr(stdin), true), FileAccess.Write), 
+                                              master, 
+                                              new FileStream(new SafeFileHandle(new IntPtr(master), true), FileAccess.Write), 
                                               new FileStream(new SafeFileHandle(new IntPtr(master), true), FileAccess.Read));
             }
             finally

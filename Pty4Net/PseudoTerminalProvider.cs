@@ -6,7 +6,7 @@ using Pty4Net.Win32;
 namespace Pty4Net
 {
     /// <summary>
-    /// 
+    /// A provider of <see cref="IPseudoTerminal"/> instances.
     /// </summary>
     public static class PseudoTerminalProvider {
         /// <summary>
@@ -35,19 +35,20 @@ namespace Pty4Net
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="IPseudoTerminal"/> instance with the default options
+        /// for the current system.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A reference to a new <see cref="IPseudoTerminal"/> instance.</returns>
         public static IPseudoTerminal CreatePseudoTerminal() {
             PseudoTerminalOptions options = PseudoTerminalOptions.CreateDefault();
             return CreatePseudoTerminal(options);
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="IPseudoTerminal"/> instance.
         /// </summary>
-        /// <param name="options"></param>
-        /// <returns></returns>
+        /// <param name="options">The options allow to customize how the instance is created.</param>
+        /// <returns>A reference to a new <see cref="IPseudoTerminal"/> instance.</returns>
         public static IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options) {
             return Provider.Value.CreatePseudoTerminal(options);
         }
