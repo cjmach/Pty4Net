@@ -24,8 +24,13 @@ namespace Pty4Net
             }
         }
 
-        public static IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments) {
-            return Provider.Value.Create(columns, rows, initialDirectory, environment, command, arguments);
+        public static IPseudoTerminal Create() {
+            PseudoTerminalOptions options = PseudoTerminalOptions.CreateDefault();
+            return Create(options);
+        }
+
+        public static IPseudoTerminal Create(PseudoTerminalOptions options) {
+            return Provider.Value.Create(options);
         }
     }
 }

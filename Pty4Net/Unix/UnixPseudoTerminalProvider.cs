@@ -11,7 +11,7 @@ namespace Pty4Net.Unix
 {
     internal class UnixPseudoTerminalProvider : IPseudoTerminalProvider
     {
-        public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
+        public IPseudoTerminal Create(PseudoTerminalOptions options)
         {
             IntPtr fileActions = IntPtr.Zero;
             IntPtr attributes = IntPtr.Zero;
@@ -54,8 +54,8 @@ namespace Pty4Net.Unix
                 envVars.Add(null);
 
                 string path = typeof(UnixSlave.Program).Assembly.Location;
-                List<string> argsArray = new List<string> { "dotnet", path, "-d", initialDirectory, "-s", command };
-                argsArray.AddRange(arguments);
+                List<string> argsArray = new List<string> { "dotnet", path, "-d", options.InitialDirectory, "-s", options.Command };
+                argsArray.AddRange(options.Arguments);
                 argsArray.Add(null);
 
                 res = NativeMethods.posix_spawnp(out IntPtr pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());

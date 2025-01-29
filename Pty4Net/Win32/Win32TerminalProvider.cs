@@ -25,7 +25,7 @@ namespace Pty4Net.Win32
             }
         }
 
-        public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
+        public IPseudoTerminal Create(PseudoTerminalOptions options)
         {
             IPseudoTerminalProvider provider;
             if (IsConPtySupported)
@@ -36,7 +36,7 @@ namespace Pty4Net.Win32
             {
                 provider = new WinPtyTerminalProvider();
             }
-            return provider.Create(columns, rows, initialDirectory, environment, command, arguments);
+            return provider.Create(options);
         }
     }
 }

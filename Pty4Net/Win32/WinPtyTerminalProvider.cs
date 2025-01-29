@@ -9,10 +9,10 @@ namespace Pty4Net.Win32
 {
     internal class WinPtyTerminalProvider : IPseudoTerminalProvider
     {
-        public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
+        public IPseudoTerminal Create(PseudoTerminalOptions options)
         {
             var cfg = winpty_config_new(WINPTY_FLAG_COLOR_ESCAPES, out IntPtr err);
-            winpty_config_set_initial_size(cfg, columns, rows);
+            winpty_config_set_initial_size(cfg, options.Columns, options.Rows);
 
             var handle = winpty_open(cfg, out err);
 
@@ -22,11 +22,11 @@ namespace Pty4Net.Win32
                 return null;
             }
 
-            string exe = command;
-            string args = string.Join(" ", arguments);
-            string cwd = initialDirectory;
+            string exe = options.Command;
+            string args = string.Join(" ", options.Arguments);
+            string cwd = options.InitialDirectory;
 
-            var spawnCfg = winpty_spawn_config_new(WINPTY_SPAWN_FLAG_AUTO_SHUTDOWN, exe, args, cwd, environment, out err);
+            var spawnCfg = winpty_spawn_config_new(WINPTY_SPAWN_FLAG_AUTO_SHUTDOWN, exe, args, cwd, options.Environment, out err);
             if (err != IntPtr.Zero)
             {
                 Console.WriteLine(winpty_error_code(err));
