@@ -8,15 +8,13 @@ namespace Pty4Net.Unix
 {
     internal class UnixPseudoTerminal : BasePseudoTerminal
     {
-        private int _handle;
         private int _cfg;
         private Stream _stdin = null;
         private Stream _stdout = null;
         private bool _isDisposed = false;
 
-        internal UnixPseudoTerminal(Process process, int handle, int cfg, Stream stdin, Stream stdout) : base(process)
+        internal UnixPseudoTerminal(Process process, int cfg, Stream stdin, Stream stdout) : base(process)
         {
-            _handle = handle;
             _stdin = stdin;
             _stdout = stdout;
 
