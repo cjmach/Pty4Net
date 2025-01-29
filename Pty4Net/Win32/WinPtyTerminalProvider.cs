@@ -9,22 +9,6 @@ namespace Pty4Net.Win32
 {
     internal class WinPtyTerminalProvider : IPseudoTerminalProvider
     {
-        private static IntPtr TryGetHandle(Process p)
-        {
-            var result = IntPtr.Zero;
-
-            try
-            {
-                result = p.Handle;
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return result;
-        }
-
         public IPseudoTerminal Create(int columns, int rows, string initialDirectory, string environment, string command, params string[] arguments)
         {
             var cfg = winpty_config_new(WINPTY_FLAG_COLOR_ESCAPES, out IntPtr err);
@@ -34,18 +18,18 @@ namespace Pty4Net.Win32
 
             if (err != IntPtr.Zero)
             {
-                System.Console.WriteLine(winpty_error_code(err));
+                Console.WriteLine(winpty_error_code(err));
                 return null;
             }
 
             string exe = command;
-            string args = String.Join(" ", arguments);
+            string args = string.Join(" ", arguments);
             string cwd = initialDirectory;
 
             var spawnCfg = winpty_spawn_config_new(WINPTY_SPAWN_FLAG_AUTO_SHUTDOWN, exe, args, cwd, environment, out err);
             if (err != IntPtr.Zero)
             {
-                System.Console.WriteLine(winpty_error_code(err));
+                Console.WriteLine(winpty_error_code(err));
                 return null;
             }
 
@@ -54,7 +38,7 @@ namespace Pty4Net.Win32
 
             if (!winpty_spawn(handle, spawnCfg, out IntPtr process, out IntPtr thread, out int procError, out err))
             {
-                System.Console.WriteLine(winpty_error_code(err));
+                Console.WriteLine(winpty_error_code(err));
                 return null;
             }
 
@@ -65,7 +49,7 @@ namespace Pty4Net.Win32
             return new WinPtyTerminal(terminalProcess, handle, cfg, spawnCfg, err, stdin, stdout);
         }
 
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32", SetLastError = true)]
         static extern int GetProcessId(IntPtr handle);
 
         private Stream CreatePipe(string pipeName, PipeDirection direction)

@@ -3,7 +3,6 @@ using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft.Win32.SafeHandles;
 
 namespace Pty4Net.Win32 {
     internal class ConPtyTerminal : IPseudoTerminal
@@ -17,7 +16,7 @@ namespace Pty4Net.Win32 {
 
         public Process Process => processInfo.Process;
 
-        public ConPtyTerminal(ProcessInformation processInfo, PseudoConsole console, Pipe input, Pipe output) {
+        internal ConPtyTerminal(ProcessInformation processInfo, PseudoConsole console, Pipe input, Pipe output) {
             this.processInfo = processInfo;
             this.console = console;
             this.input = input;
@@ -56,8 +55,8 @@ namespace Pty4Net.Win32 {
 
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            if (buffer.Length == 1 && buffer[0] == 10) {
-                buffer[0] = 13;
+            if (buffer.Length == 1 && buffer[0] == (byte) '\n') {
+                buffer[0] = (byte) '\r';
             }
             await writer.WriteAsync(buffer, offset, count);
         }

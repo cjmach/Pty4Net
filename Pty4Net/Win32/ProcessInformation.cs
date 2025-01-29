@@ -1,17 +1,19 @@
 using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Pty4Net.Win32 {
+    
+    using static NativeMethods;
+
     internal class ProcessInformation : IDisposable
     {
-        private readonly NativeMethods.STARTUPINFOEX startupInfo;
-        private readonly NativeMethods.PROCESS_INFORMATION processInfo;
+        private readonly STARTUPINFOEX startupInfo;
+        private readonly PROCESS_INFORMATION processInfo;
         private bool disposed;
 
         internal Process Process { get; }
 
-        internal ProcessInformation(NativeMethods.STARTUPINFOEX startupInfo, NativeMethods.PROCESS_INFORMATION processInfo) {
+        internal ProcessInformation(STARTUPINFOEX startupInfo, PROCESS_INFORMATION processInfo) {
             this.startupInfo = startupInfo;
             this.processInfo = processInfo;
             Process = Process.GetProcessById(processInfo.dwProcessId);

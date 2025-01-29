@@ -51,9 +51,9 @@ namespace Pty4Net.Win32
 
         public async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            if (buffer.Length == 1 && buffer[0] == 10)
+            if (buffer.Length == 1 && buffer[0] == (byte) '\n')
             {
-                buffer[0] = 13;
+                buffer[0] = (byte) '\r';
             }
 
             await _stdin.WriteAsync(buffer, offset, count);
