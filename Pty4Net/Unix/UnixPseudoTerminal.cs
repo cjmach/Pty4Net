@@ -44,35 +44,20 @@ namespace Pty4Net.Unix
         {
             await Task.Run(() =>
             {
-                IntPtr buf = Marshal.AllocHGlobal(count);
-                try
-                {
-                    Marshal.Copy(buffer, offset, buf, count);
-                    NativeMethods.write(_cfg, buf, count);
-                }
-                finally
-                {
-                    Marshal.FreeHGlobal(buf);
-                }
+                NativeMethods.write(_cfg, buffer, count);
             });
         }
 
         public override void SetSize(int columns, int rows)
         {
-            NativeMethods.WinSize size = new NativeMethods.WinSize();
-            int ret;
-            size.ws_row = (ushort)(rows > 0 ? rows : 24);
-            size.ws_col = (ushort)(columns > 0 ? columns : 80);
-
-            IntPtr ptr = NativeMethods.StructToPtr(size);
-            try
+            if (columns > 0 && rows > 0)
             {
-                ret = NativeMethods.ioctl(_cfg, NativeMethods.TIOCSWINSZ, ptr);
-                var error = Marshal.GetLastWin32Error();
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(ptr);
+                NativeMethods.WinSize size = new NativeMethods.WinSize(columns, rows);
+                int ret = NativeMethods.ioctl(_cfg, NativeMethods.TIOCSWINSZ, ref size);
+                if (ret < 0) 
+                {
+                    throw new InvalidOperationException("Call to ioctl(2) failed. Error: " + Marshal.GetLastWin32Error());
+                }
             }
         }
     }

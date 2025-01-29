@@ -42,7 +42,7 @@ namespace Pty4Net.Unix
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Setsid();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
-        internal delegate int Ioctl(int fd, UInt64 ctl, IntPtr arg);
+        internal delegate int Ioctl(int fd, UInt64 ctl, [In] ref NativeMethods.WinSize arg);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Close(int fd);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
@@ -60,7 +60,7 @@ namespace Pty4Net.Unix
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int Waitpid(int pid, IntPtr status, int options);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
-        internal delegate int Write(int fd, IntPtr buffer, int length);
+        internal delegate int Write(int fd, byte[] buffer, int length);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
         internal delegate int posix_spawn_file_actions_adddup2(IntPtr file_actions, int fildes, int newfildes);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, SetLastError = true)]
@@ -109,6 +109,11 @@ namespace Pty4Net.Unix
             public ushort ws_col;   /* columns, in characters */
             public ushort ws_xpixel;    /* horizontal size, pixels */
             public ushort ws_ypixel;    /* vertical size, pixels */
+
+            internal WinSize(int cols, int rows) {
+                this.ws_col = (ushort) cols;
+                this.ws_row = (ushort) rows;
+            }
         };
 
         internal static readonly NativeDelegates.Open open = NativeDelegates.GetProc<NativeDelegates.Open>();
@@ -126,14 +131,5 @@ namespace Pty4Net.Unix
         internal static readonly NativeDelegates.posix_spawnp posix_spawnp = NativeDelegates.GetProc<NativeDelegates.posix_spawnp>();
         internal static readonly NativeDelegates.Dup dup = NativeDelegates.GetProc<NativeDelegates.Dup>();
         internal static readonly NativeDelegates.Ioctl ioctl = NativeDelegates.GetProc<NativeDelegates.Ioctl>();
-
-        internal static IntPtr StructToPtr(object obj)
-        {
-            var ptr = Marshal.AllocHGlobal(Marshal.SizeOf(obj));
-            Marshal.StructureToPtr(obj, ptr, false);
-            return ptr;
-        }
-
-
     }
 }
