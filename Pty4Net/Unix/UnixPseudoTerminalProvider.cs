@@ -47,31 +47,17 @@ namespace Pty4Net.Unix
                 attributes = Marshal.AllocHGlobal(1024);
                 res = NativeMethods.posix_spawnattr_init(attributes);
 
-                List<string> envVars = new List<string>();
-                IDictionary env = Environment.GetEnvironmentVariables();
-
-                foreach (string variable in env.Keys)
-                {
-                    if (variable != "TERM")
-                    {
-                        envVars.Add($"{variable}={env[variable]}");
-                    }
-                }
-
-                envVars.Add("TERM=xterm-256color");
-                envVars.Add(null);
+                string[] envVars = options.EnvironmentList;
 
                 string path = typeof(UnixSlave.Program).Assembly.Location;
                 List<string> argsArray = new List<string> { "dotnet", path, "-d", options.InitialDirectory, "-s", options.Command };
                 argsArray.AddRange(options.Arguments);
                 argsArray.Add(null);
 
-                res = NativeMethods.posix_spawnp(out IntPtr pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars.ToArray());
+                res = NativeMethods.posix_spawnp(out IntPtr pid, "dotnet", fileActions, attributes, argsArray.ToArray(), envVars);
 
                 Process process = Process.GetProcessById(pid.ToInt32());
-                Task.Run(() => { 
-                    NativeMethods.waitpid(process.Id, IntPtr.Zero, 0);
-                });
+                Waitpid(process.Id);
                 return new UnixPseudoTerminal(process,
                                               master, 
                                               new FileStream(new SafeFileHandle(new IntPtr(master), true), FileAccess.Write), 
@@ -90,6 +76,13 @@ namespace Pty4Net.Unix
                     Marshal.FreeHGlobal(attributes);
                 }
             }
+        }
+
+        private void Waitpid(int pid) {
+            Task.Run(() => 
+            { 
+                NativeMethods.waitpid(pid, IntPtr.Zero, 0);
+            });
         }
     }
 }

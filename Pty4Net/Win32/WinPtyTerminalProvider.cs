@@ -34,7 +34,7 @@ namespace Pty4Net.Win32
             string args = string.Join(" ", options.Arguments);
             string cwd = options.InitialDirectory;
 
-            var spawnCfg = winpty_spawn_config_new(WINPTY_SPAWN_FLAG_AUTO_SHUTDOWN, exe, args, cwd, options.Environment, out err);
+            var spawnCfg = winpty_spawn_config_new(WINPTY_SPAWN_FLAG_AUTO_SHUTDOWN, exe, args, cwd, options.EnvironmentString, out err);
             if (err != IntPtr.Zero)
             {
                 Console.WriteLine(winpty_error_code(err));
