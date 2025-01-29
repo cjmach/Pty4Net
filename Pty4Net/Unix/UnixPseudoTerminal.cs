@@ -6,19 +6,16 @@ using System.Threading.Tasks;
 
 namespace Pty4Net.Unix
 {
-    internal class UnixPseudoTerminal : IPseudoTerminal
+    internal class UnixPseudoTerminal : BasePseudoTerminal
     {
         private int _handle;
         private int _cfg;
         private Stream _stdin = null;
         private Stream _stdout = null;
-        private Process _process;
         private bool _isDisposed = false;
 
-        internal UnixPseudoTerminal(Process process, int handle, int cfg, Stream stdin, Stream stdout)
+        internal UnixPseudoTerminal(Process process, int handle, int cfg, Stream stdin, Stream stdout) : base(process)
         {
-            _process = process;
-
             _handle = handle;
             _stdin = stdin;
             _stdout = stdout;
@@ -26,7 +23,7 @@ namespace Pty4Net.Unix
             _cfg = cfg;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (!_isDisposed)
             {
@@ -38,12 +35,12 @@ namespace Pty4Net.Unix
             }
         }
 
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
             return await _stdout.ReadAsync(buffer, offset, count);
         }
 
-        public async Task WriteAsync(byte[] buffer, int offset, int count)
+        public override async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             await Task.Run(() =>
             {
@@ -60,7 +57,7 @@ namespace Pty4Net.Unix
             });
         }
 
-        public void SetSize(int columns, int rows)
+        public override void SetSize(int columns, int rows)
         {
             NativeMethods.WinSize size = new NativeMethods.WinSize();
             int ret;
@@ -78,7 +75,5 @@ namespace Pty4Net.Unix
                 Marshal.FreeHGlobal(ptr);
             }
         }
-
-        public Process Process => _process;
     }
 }

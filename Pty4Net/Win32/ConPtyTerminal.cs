@@ -4,8 +4,9 @@ using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Pty4Net.Win32 {
-    internal class ConPtyTerminal : IPseudoTerminal
+namespace Pty4Net.Win32
+{
+    internal class ConPtyTerminal : BasePseudoTerminal
     {
         private readonly ProcessInformation processInfo;
         private readonly PseudoConsole console;
@@ -14,9 +15,8 @@ namespace Pty4Net.Win32 {
         private readonly Stream reader;
         private readonly Stream writer;
 
-        public Process Process => processInfo.Process;
-
-        internal ConPtyTerminal(ProcessInformation processInfo, PseudoConsole console, Pipe input, Pipe output) {
+        internal ConPtyTerminal(ProcessInformation processInfo, PseudoConsole console, Pipe input, Pipe output) : base(processInfo.Process)
+        {
             this.processInfo = processInfo;
             this.console = console;
             this.input = input;
@@ -25,7 +25,7 @@ namespace Pty4Net.Win32 {
             this.writer = new AnonymousPipeClientStream(PipeDirection.Out, input.WriteSide);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             processInfo.Dispose();
             console.Dispose();
@@ -35,28 +35,29 @@ namespace Pty4Net.Win32 {
             input.Dispose();
         }
 
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
             return await reader.ReadAsync(buffer, offset, count);
         }
 
-        public void SetSize(int columns, int rows)
+        public override void SetSize(int columns, int rows)
         {
-            if (columns >= 1 && rows >= 1) 
+            if (columns >= 1 && rows >= 1)
             {
                 NativeMethods.COORD size = new NativeMethods.COORD(columns, rows);
                 int result = NativeMethods.ResizePseudoConsole(console.Handle, size);
-                if (result != 0) 
+                if (result != 0)
                 {
                     Marshal.ThrowExceptionForHR(result);
                 }
             }
         }
 
-        public async Task WriteAsync(byte[] buffer, int offset, int count)
+        public override async Task WriteAsync(byte[] buffer, int offset, int count)
         {
-            if (buffer.Length == 1 && buffer[0] == (byte) '\n') {
-                buffer[0] = (byte) '\r';
+            if (buffer.Length == 1 && buffer[0] == (byte)'\n')
+            {
+                buffer[0] = (byte)'\r';
             }
             await writer.WriteAsync(buffer, offset, count);
         }

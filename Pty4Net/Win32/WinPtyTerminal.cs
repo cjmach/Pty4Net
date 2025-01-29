@@ -6,7 +6,7 @@ using static winpty.WinPty;
 
 namespace Pty4Net.Win32
 {
-    internal class WinPtyTerminal : IPseudoTerminal
+    internal class WinPtyTerminal : BasePseudoTerminal
     {
         private IntPtr _handle = IntPtr.Zero;
         private IntPtr _err = IntPtr.Zero;
@@ -17,7 +17,7 @@ namespace Pty4Net.Win32
         private Process _process;
         private bool _isDisposed = false;
 
-        internal WinPtyTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout)
+        internal WinPtyTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout) : base(process)
         {
             _process = process;
 
@@ -30,7 +30,7 @@ namespace Pty4Net.Win32
             _err = err;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             if (!_isDisposed)
             {
@@ -44,12 +44,12 @@ namespace Pty4Net.Win32
             }
         }
 
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count)
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
             return await _stdout.ReadAsync(buffer, offset, count);
         }
 
-        public async Task WriteAsync(byte[] buffer, int offset, int count)
+        public override async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             if (buffer.Length == 1 && buffer[0] == (byte) '\n')
             {
@@ -59,14 +59,12 @@ namespace Pty4Net.Win32
             await _stdin.WriteAsync(buffer, offset, count);
         }
 
-        public void SetSize(int columns, int rows)
+        public override void SetSize(int columns, int rows)
         {
             if (_cfg != IntPtr.Zero && columns >= 1 && rows >= 1)
             {
                 winpty_set_size(_handle, columns, rows, out _err);
             }
         }
-
-        public Process Process => _process;
     }
 }
