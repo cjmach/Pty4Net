@@ -11,7 +11,7 @@ namespace Pty4Net
         /// <summary>
         /// Triggered when the terminal's process exits.
         /// </summary>
-        public event EventHandler<ProcessExitedEventArgs> ProcessExited;
+        public event EventHandler<PseudoTerminalExitedEventArgs> ProcessExited;
 
         /// <summary>
         /// Set terminal window size.

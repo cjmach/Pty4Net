@@ -18,7 +18,7 @@ namespace Pty4Net
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<ProcessExitedEventArgs> ProcessExited;
+        public event EventHandler<PseudoTerminalExitedEventArgs> ProcessExited;
 
         /// <summary>
         /// 
@@ -65,7 +65,7 @@ namespace Pty4Net
         /// 
         /// </summary>
         protected virtual void OnProcessExited() {
-            ProcessExited?.Invoke(this, new ProcessExitedEventArgs(Process));
+            ProcessExited?.Invoke(this, new PseudoTerminalExitedEventArgs(Process));
         }
     }
 }

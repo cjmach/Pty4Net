@@ -6,10 +6,10 @@ namespace Pty4Net
     /// <summary>
     /// 
     /// </summary>
-    public class ProcessExitedEventArgs : EventArgs
+    public class PseudoTerminalExitedEventArgs : EventArgs
     {
         /// <summary>
-        /// 
+        /// The terminal's process.
         /// </summary>
         public Process Process { get; }
 
@@ -17,7 +17,7 @@ namespace Pty4Net
         /// 
         /// </summary>
         /// <param name="process"></param>
-        internal ProcessExitedEventArgs(Process process)
+        internal PseudoTerminalExitedEventArgs(Process process)
         {
             Process = process;
         }
