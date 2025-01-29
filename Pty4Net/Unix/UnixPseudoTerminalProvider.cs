@@ -9,9 +9,17 @@ using System.Threading.Tasks;
 
 namespace Pty4Net.Unix
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class UnixPseudoTerminalProvider : IPseudoTerminalProvider
     {
-        public IPseudoTerminal Create(PseudoTerminalOptions options)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options)
         {
             IntPtr fileActions = IntPtr.Zero;
             IntPtr attributes = IntPtr.Zero;

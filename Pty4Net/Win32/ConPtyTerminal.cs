@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
@@ -6,15 +5,43 @@ using System.Threading.Tasks;
 
 namespace Pty4Net.Win32
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class ConPtyTerminal : BasePseudoTerminal
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly ProcessInformation processInfo;
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly PseudoConsole console;
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly Pipe input;
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly Pipe output;
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly Stream reader;
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly Stream writer;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="processInfo"></param>
+        /// <param name="console"></param>
+        /// <param name="input"></param>
+        /// <param name="output"></param>
         internal ConPtyTerminal(ProcessInformation processInfo, PseudoConsole console, Pipe input, Pipe output) : base(processInfo.Process)
         {
             this.processInfo = processInfo;
@@ -25,6 +52,9 @@ namespace Pty4Net.Win32
             this.writer = new AnonymousPipeClientStream(PipeDirection.Out, input.WriteSide);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Dispose()
         {
             processInfo.Dispose();
@@ -35,11 +65,23 @@ namespace Pty4Net.Win32
             input.Dispose();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
             return await reader.ReadAsync(buffer, offset, count);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="rows"></param>
         public override void SetSize(int columns, int rows)
         {
             if (columns >= 1 && rows >= 1)
@@ -53,6 +95,13 @@ namespace Pty4Net.Win32
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public override async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             if (buffer.Length == 1 && buffer[0] == (byte)'\n')

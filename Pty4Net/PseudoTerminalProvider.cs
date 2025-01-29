@@ -5,9 +5,19 @@ using Pty4Net.Win32;
 
 namespace Pty4Net
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class PseudoTerminalProvider {
+        /// <summary>
+        /// 
+        /// </summary>
         private static readonly Lazy<IPseudoTerminalProvider> Provider;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="PlatformNotSupportedException"></exception>
         static PseudoTerminalProvider()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -24,13 +34,22 @@ namespace Pty4Net
             }
         }
 
-        public static IPseudoTerminal Create() {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static IPseudoTerminal CreatePseudoTerminal() {
             PseudoTerminalOptions options = PseudoTerminalOptions.CreateDefault();
-            return Create(options);
+            return CreatePseudoTerminal(options);
         }
 
-        public static IPseudoTerminal Create(PseudoTerminalOptions options) {
-            return Provider.Value.Create(options);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options) {
+            return Provider.Value.CreatePseudoTerminal(options);
         }
     }
 }

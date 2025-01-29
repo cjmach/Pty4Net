@@ -3,10 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace Pty4Net.Win32
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class Win32TerminalProvider : IPseudoTerminalProvider
     {
+        /// <summary>
+        /// 
+        /// </summary>
         private static readonly bool IsConPtySupported;
 
+        /// <summary>
+        /// 
+        /// </summary>
         static Win32TerminalProvider()
         {
             IntPtr kernelLib = NativeLibrary.Load("kernel32", typeof(Win32TerminalProvider).Assembly, DllImportSearchPath.System32);
@@ -25,7 +34,12 @@ namespace Pty4Net.Win32
             }
         }
 
-        public IPseudoTerminal Create(PseudoTerminalOptions options)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options)
         {
             IPseudoTerminalProvider provider;
             if (IsConPtySupported)
@@ -36,7 +50,7 @@ namespace Pty4Net.Win32
             {
                 provider = new WinPtyTerminalProvider();
             }
-            return provider.Create(options);
+            return provider.CreatePseudoTerminal(options);
         }
     }
 }

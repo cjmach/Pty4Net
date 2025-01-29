@@ -6,49 +6,97 @@ using static winpty.WinPty;
 
 namespace Pty4Net.Win32
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class WinPtyTerminal : BasePseudoTerminal
     {
-        private IntPtr _handle = IntPtr.Zero;
-        private IntPtr _err = IntPtr.Zero;
-        private IntPtr _cfg = IntPtr.Zero;
-        private IntPtr _spawnCfg = IntPtr.Zero;
-        private Stream _stdin = null;
-        private Stream _stdout = null;
-        private Process _process;
-        private bool _isDisposed = false;
+        /// <summary>
+        /// 
+        /// </summary>
+        private IntPtr handle = IntPtr.Zero;
+        /// <summary>
+        /// 
+        /// </summary>
+        private IntPtr err = IntPtr.Zero;
+        /// <summary>
+        /// 
+        /// </summary>
+        private IntPtr cfg = IntPtr.Zero;
+        /// <summary>
+        /// 
+        /// </summary>
+        private IntPtr spawnCfg = IntPtr.Zero;
+        /// <summary>
+        /// 
+        /// </summary>
+        private Stream stdin;
+        /// <summary>
+        /// 
+        /// </summary>
+        private Stream stdout;
+        /// <summary>
+        /// 
+        /// </summary>
+        private bool isDisposed;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="process"></param>
+        /// <param name="handle"></param>
+        /// <param name="cfg"></param>
+        /// <param name="spawnCfg"></param>
+        /// <param name="err"></param>
+        /// <param name="stdin"></param>
+        /// <param name="stdout"></param>
         internal WinPtyTerminal(Process process, IntPtr handle, IntPtr cfg, IntPtr spawnCfg, IntPtr err, Stream stdin, Stream stdout) : base(process)
         {
-            _process = process;
+            this.handle = handle;
+            this.stdin = stdin;
+            this.stdout = stdout;
 
-            _handle = handle;
-            _stdin = stdin;
-            _stdout = stdout;
-
-            _cfg = cfg;
-            _spawnCfg = spawnCfg;
-            _err = err;
+            this.cfg = cfg;
+            this.spawnCfg = spawnCfg;
+            this.err = err;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Dispose()
         {
-            if (!_isDisposed)
+            if (!isDisposed)
             {
-                _isDisposed = true;
-                _stdin?.Dispose();
-                _stdout?.Dispose();
-                winpty_config_free(_cfg);
-                winpty_spawn_config_free(_spawnCfg);
-                winpty_error_free(_err);
-                winpty_free(_handle);
+                isDisposed = true;
+                stdin?.Dispose();
+                stdout?.Dispose();
+                winpty_config_free(cfg);
+                winpty_spawn_config_free(spawnCfg);
+                winpty_error_free(err);
+                winpty_free(handle);
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count)
         {
-            return await _stdout.ReadAsync(buffer, offset, count);
+            return await stdout.ReadAsync(buffer, offset, count);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public override async Task WriteAsync(byte[] buffer, int offset, int count)
         {
             if (buffer.Length == 1 && buffer[0] == (byte) '\n')
@@ -56,14 +104,19 @@ namespace Pty4Net.Win32
                 buffer[0] = (byte) '\r';
             }
 
-            await _stdin.WriteAsync(buffer, offset, count);
+            await stdin.WriteAsync(buffer, offset, count);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="rows"></param>
         public override void SetSize(int columns, int rows)
         {
-            if (_cfg != IntPtr.Zero && columns >= 1 && rows >= 1)
+            if (cfg != IntPtr.Zero && columns >= 1 && rows >= 1)
             {
-                winpty_set_size(_handle, columns, rows, out _err);
+                winpty_set_size(handle, columns, rows, out err);
             }
         }
     }

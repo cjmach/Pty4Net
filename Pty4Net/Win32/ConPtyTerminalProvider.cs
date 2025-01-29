@@ -2,9 +2,18 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace Pty4Net.Win32 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class ConPtyTerminalProvider : IPseudoTerminalProvider
     {
-        public IPseudoTerminal Create(PseudoTerminalOptions options)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options)
         {
             Pipe input = new Pipe();
             Pipe output = new Pipe();

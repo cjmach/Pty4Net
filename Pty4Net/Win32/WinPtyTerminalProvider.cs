@@ -7,9 +7,17 @@ using static winpty.WinPty;
 
 namespace Pty4Net.Win32
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class WinPtyTerminalProvider : IPseudoTerminalProvider
     {
-        public IPseudoTerminal Create(PseudoTerminalOptions options)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options)
         {
             var cfg = winpty_config_new(WINPTY_FLAG_COLOR_ESCAPES, out IntPtr err);
             winpty_config_set_initial_size(cfg, options.Columns, options.Rows);
@@ -49,9 +57,20 @@ namespace Pty4Net.Win32
             return new WinPtyTerminal(terminalProcess, handle, cfg, spawnCfg, err, stdin, stdout);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns></returns>
         [DllImport("kernel32", SetLastError = true)]
         static extern int GetProcessId(IntPtr handle);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pipeName"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
         private Stream CreatePipe(string pipeName, PipeDirection direction)
         {
             string serverName = ".";

@@ -1,7 +1,15 @@
 ﻿namespace Pty4Net
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IPseudoTerminalProvider
     {
-        IPseudoTerminal Create(PseudoTerminalOptions options);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        IPseudoTerminal CreatePseudoTerminal(PseudoTerminalOptions options);
     }
 }
