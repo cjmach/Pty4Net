@@ -44,9 +44,14 @@ public class PseudoTerminalTests
     public void TestTerminal()
     {
         bool exited = false;
+
+        PseudoTerminalOptions options = PseudoTerminalOptions.CreateDefault();
+        options.Columns = 80;
+        options.Rows = 40;
+        
         // output FileStream is used to save the terminal output.
         using FileStream output = File.OpenWrite(OutputFile);
-        using IPseudoTerminal terminal = PseudoTerminalProvider.CreatePseudoTerminal();
+        using IPseudoTerminal terminal = PseudoTerminalProvider.CreatePseudoTerminal(options);
         terminal.ProcessExited += (sender, e) => exited = true;
         CancellationTokenSource cancellationSource = new CancellationTokenSource();
         Task.Run(async () =>
