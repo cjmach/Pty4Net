@@ -110,6 +110,6 @@ public class PseudoTerminalTests
             }
         }
 
-        Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output.");
+        Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output. Current content: {Environment.NewLine}{File.ReadAllText(OutputFile)}");
     }
 }
