@@ -41,6 +41,6 @@ jobs:
     - name: Upload NuGet package to release
       run: |
         echo "Uploading to ref ${{ github.event.release.tag_name }}..."
-        gh release upload ${{ github.event.release.tag_name }} ${{ github.workspace }}/Pty4Net/bin/Release/*.nupkg
+        gh release upload ${{ github.event.release.tag_name }} ${{ github.workspace }}/Pty4Net/bin/Release/*.nupkg ${{ github.workspace }}/Pty4Net/bin/Release/*.snupkg
       env:
         GITHUB_TOKEN: ${{ github.token }}
