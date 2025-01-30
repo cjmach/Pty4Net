@@ -45,11 +45,11 @@ Task.Run(async () =>
     while (!cancellationSource.IsCancellationRequested)
     {
         // read terminal output.
-        var bytesReceived = await terminal.ReadAsync(data, 0, data.Length);
-        if (bytesReceived > 0)
+        int nread = await terminal.ReadAsync(data, 0, data.Length);
+        if (nread > 0)
         {
             // save terminal output data to file.
-            output.Write(data, 0, bytesReceived);
+            output.Write(data, 0, nread);
         }
         await Task.Delay(5);
     }
