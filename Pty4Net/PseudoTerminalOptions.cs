@@ -14,13 +14,13 @@ namespace Pty4Net
     public sealed class PseudoTerminalOptions
     {
         /// <summary>
-        /// Gets or sets the width of the pseudo-terminal window.
+        /// Gets or sets the width of the pseudo-terminal window. Default is 80.
         /// </summary>
-        public int Columns { get; set; } = Console.WindowWidth;
+        public int Columns { get; set; } = 80;
         /// <summary>
-        /// Gets or sets the height of the pseudo-terminal window.
+        /// Gets or sets the height of the pseudo-terminal window. Default is 40.
         /// </summary>
-        public int Rows { get; set; } = Console.WindowHeight;
+        public int Rows { get; set; } = 40;
         /// <summary>
         /// Gets or sets the initial working directory of the pseudo-terminal. Default is the user's profile directory.
         /// </summary>
