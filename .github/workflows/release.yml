@@ -39,7 +39,8 @@ jobs:
       run: dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
 
     - name: Upload NuGet package to release
-      uses: actions/upload-artifact@v4
-      with:
-        name: NuGet Package
-        path: Pty4Net/bin/Release/*.nupkg
+      run: |
+        echo "Uploading to ref ${{ github.event.release.tag_name }}..."
+        gh release upload ${{ github.event.release.tag_name }} ${{ github.workspace }}/Pty4Net/bin/Release/*.nupkg
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
