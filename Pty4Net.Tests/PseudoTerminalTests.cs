@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -13,13 +14,30 @@ public class PseudoTerminalTests
     private const string OutputFileName = "pty-output.txt";
     private readonly string OutputFile = Path.Combine(Path.GetDirectoryName(typeof(PseudoTerminalTests).Assembly.Location), OutputFileName);
 
-    [SetUp]
-    public void SetUp()
+    [OneTimeSetUp]
+    public void Init()
     {
         if (File.Exists(OutputFile))
         {
             File.Delete(OutputFile);
         }
+    }
+
+    [Test]
+    public void TestOptions() {
+        PseudoTerminalOptions options = PseudoTerminalOptions.CreateDefault();
+
+        string expectedCmd;
+        string[] expectedArgs;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+            expectedCmd = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "cmd.exe");
+            expectedArgs = [];
+        } else {
+            expectedCmd = "/bin/bash";
+            expectedArgs = ["--login"];
+        }
+        Assert.That(options.Command, Is.EqualTo(expectedCmd));
+        Assert.That(options.Arguments, Is.EqualTo(expectedArgs));
     }
 
     [Test]
@@ -52,7 +70,7 @@ public class PseudoTerminalTests
         string outputToMatch = $"Testing {random}";
 
         // send 'echo' command.
-        byte[] enter = new byte[] { (byte)'\n' };
+        byte[] enter = Encoding.Default.GetBytes(Environment.NewLine);
         byte[] echoCmd = Encoding.Default.GetBytes($"echo {outputToMatch}");
         terminal.WriteAsync(echoCmd, 0, echoCmd.Length).Wait();
         terminal.WriteAsync(enter, 0, enter.Length).Wait();
