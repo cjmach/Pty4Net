@@ -1,0 +1,45 @@
+name: NuGet Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+      
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build Release
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    
+    - name: Pack
+      run: dotnet pack --configuration Release
+    
+    - name: Add NuGet registry
+      run: dotnet nuget add source --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+    
+    - name: Publish NuGet package
+      working-directory: $GITHUB_WORKSPACE/Pty4Net/bin/Release
+      run: dotnet nuget push *.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"
+
+    - name: Upload NuGet package to release
+      uses: actions/upload-artifact@v4
+      with:
+        name: NuGet Package
+        path: $GITHUB_WORKSPACE/Pty4Net/bin/Release/*.nupkg

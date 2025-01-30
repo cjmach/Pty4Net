@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Pty4Net</PackageId>
+    <Version>0.7.0</Version>
+    <Authors>Carlos Machado</Authors>
+    <Description>Cross-platform pseudo terminal (PTY) implementation in .NET.</Description>
+    <RepositoryUrl>https://github.com/cjmach/Pty4Net</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,6 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pty4Net.UnixSlave\Pty4Net.UnixSlave.csproj" />
+    <ProjectReference Include="..\Pty4Net.UnixSlave\Pty4Net.UnixSlave.csproj" PrivateAssets="All" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'All'))" />
+    </ItemGroup>
+  </Target>
 </Project>
