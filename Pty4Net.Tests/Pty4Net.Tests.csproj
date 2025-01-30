@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pty4Net\Pty4Net.csproj" />
+    <ProjectReference Include="..\Pty4Net\Pty4Net.csproj" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
