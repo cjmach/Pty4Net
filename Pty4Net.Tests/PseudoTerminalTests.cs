@@ -70,7 +70,7 @@ public class PseudoTerminalTests
             }
         }, cancellationSource.Token);
 
-        Thread.Sleep(1000);
+        Thread.Sleep(500);
 
         // generate a random message to be echoed to the terminal.
         int random = RandomNumberGenerator.GetInt32(int.MaxValue);
@@ -81,6 +81,8 @@ public class PseudoTerminalTests
         byte[] echoCmd = Encoding.Default.GetBytes($"echo {outputToMatch}");
         terminal.WriteAsync(echoCmd, 0, echoCmd.Length).Wait();
         terminal.WriteAsync(enter, 0, enter.Length).Wait();
+
+        Thread.Sleep(500);
 
         // send 'exit' command.
         byte[] exitCmd = Encoding.Default.GetBytes("exit");
