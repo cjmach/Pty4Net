@@ -45,7 +45,6 @@ public class PseudoTerminalTests
     public void TestTerminal()
     {
         bool exited = false;
-        bool ok = false;
 
         // generate a random message to be echoed to the terminal.
         int random = RandomNumberGenerator.GetInt32(int.MaxValue);
@@ -107,19 +106,20 @@ public class PseudoTerminalTests
             }).Wait(5000);
         }
 
+        bool ok = false;
         string line;
         // read output, line by line.
-        Debug.WriteLine("** Terminal Output **");
-        using StreamReader reader = File.OpenText(OutputFile);
-        while ((line = reader.ReadLine()) != null)
+        using (StreamReader reader = File.OpenText(OutputFile))
         {
-            Debug.WriteLine(line);
-            if (outputToMatch.StartsWith(line))
+            while ((line = reader.ReadLine()) != null)
             {
-                ok = true;
-                break;
+                if (outputToMatch.Equals(line))
+                {
+                    ok = true;
+                    break;
+                }
             }
         }
-        Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output.");
+        Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output:{Environment.NewLine}{File.ReadAllText(OutputFile)}");
     }
 }
