@@ -102,21 +102,19 @@ public class PseudoTerminalTests
                 output.Close();
                 cancellationSource.Cancel();
             }).Wait(5000);
-
-            
-            string line;
-            // read output, line by line.
-            using StreamReader reader = File.OpenText(OutputFile);
-            while ((line = reader.ReadLine()) != null)
+        }
+        
+        string line;
+        // read output, line by line.
+        using StreamReader reader = File.OpenText(OutputFile);
+        while ((line = reader.ReadLine()) != null)
+        {
+            if (outputToMatch.StartsWith(line))
             {
-                if (outputToMatch.StartsWith(line))
-                {
-                    ok = true;
-                    break;
-                }
+                ok = true;
+                break;
             }
         }
-
         Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output. Current content: {Environment.NewLine}{File.ReadAllText(OutputFile)}");
     }
 }
