@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>Pty4Net</PackageId>
-    <Version>0.7.0</Version>
+    <Version>0.7.1</Version>
     <Authors>Carlos Machado</Authors>
     <Description>Cross-platform pseudo terminal (PTY) implementation in .NET.</Description>
     <RepositoryUrl>https://github.com/cjmach/Pty4Net</RepositoryUrl>
