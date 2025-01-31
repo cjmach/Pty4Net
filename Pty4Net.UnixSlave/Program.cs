@@ -52,10 +52,10 @@ public class Program {
         }
 
         if (SetSid() < 0) {
-            throw new InvalidOperationException("Failed to call setsid(2).");
+            throw new InvalidOperationException("Failed to call setsid(2). Error: " + Marshal.GetLastSystemError());
         }
-        if (Ioctl(0, TIOCSCTTY, IntPtr.Zero) < 0) {
-            throw new InvalidOperationException("Failed to call ioctl(2).");
+        if (Ioctl(0, TIOCSCTTY, IntPtr.Zero) < 0 && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+            throw new InvalidOperationException("Failed to call ioctl(2). Error: " + Marshal.GetLastSystemError());
         }
         Chdir(cwd);
 
