@@ -70,6 +70,8 @@ public class PseudoTerminalTests
             }
         }, cancellationSource.Token);
 
+        Thread.Sleep(1000);
+
         // generate a random message to be echoed to the terminal.
         int random = RandomNumberGenerator.GetInt32(int.MaxValue);
         string outputToMatch = $"Testing {random}";
