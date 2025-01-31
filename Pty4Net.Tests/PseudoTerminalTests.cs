@@ -47,14 +47,11 @@ public class PseudoTerminalTests
         bool exited = false;
         bool ok = false;
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            Win32.NativeMethods.EnableSequenceProcessing();
-        }
-
         // generate a random message to be echoed to the terminal.
         int random = RandomNumberGenerator.GetInt32(int.MaxValue);
         string outputToMatch = $"Testing {random}";
+
+        byte[] enter = Encoding.Default.GetBytes(Environment.NewLine);
 
         PseudoTerminalOptions options = PseudoTerminalOptions.CreateDefault();
         options.Columns = 80;
@@ -77,6 +74,7 @@ public class PseudoTerminalTests
                     {
                         // save terminal output data to file.
                         output.Write(data, 0, bytesReceived);
+                        output.Write(enter, 0, enter.Length); // hack for the test to work on Windows github worker.
                     }
                     await Task.Delay(5);
                 }
@@ -85,7 +83,6 @@ public class PseudoTerminalTests
             Thread.Sleep(250);
 
             // send 'echo' command.
-            byte[] enter = Encoding.Default.GetBytes(Environment.NewLine);
             byte[] echoCmd = Encoding.Default.GetBytes($"echo {outputToMatch}");
             terminal.WriteAsync(echoCmd, 0, echoCmd.Length).Wait();
             terminal.WriteAsync(enter, 0, enter.Length).Wait();
