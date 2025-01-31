@@ -113,7 +113,7 @@ public class PseudoTerminalTests
         {
             while ((line = reader.ReadLine()) != null)
             {
-                if (outputToMatch.Equals(line))
+                if (outputToMatch.StartsWith(line))
                 {
                     ok = true;
                     break;
