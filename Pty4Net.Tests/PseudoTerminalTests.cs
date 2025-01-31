@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -46,6 +47,11 @@ public class PseudoTerminalTests
         bool exited = false;
         bool ok = false;
 
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Win32.NativeMethods.EnableSequenceProcessing();
+        }
+
         // generate a random message to be echoed to the terminal.
         int random = RandomNumberGenerator.GetInt32(int.MaxValue);
         string outputToMatch = $"Testing {random}";
@@ -76,7 +82,7 @@ public class PseudoTerminalTests
                 }
             }, cancellationSource.Token);
 
-            Thread.Sleep(500);
+            Thread.Sleep(250);
 
             // send 'echo' command.
             byte[] enter = Encoding.Default.GetBytes(Environment.NewLine);
@@ -84,7 +90,7 @@ public class PseudoTerminalTests
             terminal.WriteAsync(echoCmd, 0, echoCmd.Length).Wait();
             terminal.WriteAsync(enter, 0, enter.Length).Wait();
 
-            Thread.Sleep(500);
+            Thread.Sleep(250);
 
             // send 'exit' command.
             byte[] exitCmd = Encoding.Default.GetBytes("exit");
@@ -103,18 +109,20 @@ public class PseudoTerminalTests
                 cancellationSource.Cancel();
             }).Wait(5000);
         }
-        
+
         string line;
         // read output, line by line.
+        Debug.WriteLine("** Terminal Output **");
         using StreamReader reader = File.OpenText(OutputFile);
         while ((line = reader.ReadLine()) != null)
         {
+            Debug.WriteLine(line);
             if (outputToMatch.StartsWith(line))
             {
                 ok = true;
                 break;
             }
         }
-        Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output. Current content: {Environment.NewLine}{File.ReadAllText(OutputFile)}");
+        Assert.IsTrue(ok, $"Line '{outputToMatch}' not found in the terminal output.");
     }
 }

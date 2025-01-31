@@ -12,6 +12,18 @@ namespace Pty4Net.Win32 {
         /// <summary>
         /// 
         /// </summary>
+        internal const int STD_OUTPUT_HANDLE = -11;
+        /// <summary>
+        /// 
+        /// </summary>
+        internal const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+        /// <summary>
+        /// 
+        /// </summary>
+        internal const uint DISABLE_NEWLINE_AUTO_RETURN = 0x0008;
+        /// <summary>
+        /// 
+        /// </summary>
         internal const int CREATE_UNICODE_ENVIRONMENT = 0x00000400;
         /// <summary>
         /// 
@@ -264,6 +276,52 @@ namespace Pty4Net.Win32 {
             [MarshalAs(UnmanagedType.Bool)]
             public bool bInheritHandle;
         }
+
+        /// <summary>
+        /// Used in unit tests.
+        /// </summary>
+        internal static void EnableSequenceProcessing()
+        {
+            SafeFileHandle stdoutHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+            if (!GetConsoleMode(stdoutHandle, out uint consoleMode))
+            {
+                throw new InvalidOperationException("Failed to call GetConsoleMode(). Error: " + Marshal.GetLastWin32Error());
+            }
+
+            consoleMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING | DISABLE_NEWLINE_AUTO_RETURN;
+            if (!SetConsoleMode(stdoutHandle, consoleMode))
+            {
+                throw new InvalidOperationException("Failed to call SetConsoleMode(). Error: " + Marshal.GetLastWin32Error());
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nStdHandle"></param>
+        /// <returns></returns>
+        [DllImport("kernel32", SetLastError = true)]
+        internal static extern SafeFileHandle GetStdHandle(int nStdHandle);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hConsoleHandle"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("kernel32", SetLastError = true)]
+        internal static extern bool SetConsoleMode(SafeFileHandle hConsoleHandle, uint mode);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("kernel32", SetLastError = true)]
+        internal static extern bool GetConsoleMode(SafeFileHandle handle, out uint mode);
 
         /// <summary>
         /// 
